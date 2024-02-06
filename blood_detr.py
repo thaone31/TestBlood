@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import torch
+import os
 from transformers import DetrForObjectDetection
 
 from transformers import DetrForObjectDetection, DetrImageProcessor, DetrFeatureExtractor
@@ -61,9 +62,16 @@ class DETRModel(nn.Module):
     def forward(self, images):
         return self.model(images)
 
-model = DETRModel(num_classes=num_class,num_queries=num_queries)
+# Lấy đường dẫn tuyệt đối đến thư mục chứa file test.py
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-state_dict = torch.load('model_file/detr/detr__blood_best01.pth', map_location=torch.device('cpu'))
+# Xây dựng đường dẫn tuyệt đối đến file detr_best.pth
+detr_best_path = os.path.join(current_dir, '..', 'detr_best.pth')
+
+model = DETRModel(num_classes=num_class, num_queries=num_queries)
+
+state_dict = torch.load(detr_best_path, map_location=torch.device('cpu'))
+
 model.load_state_dict(state_dict)
 
 
